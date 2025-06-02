@@ -1,11 +1,7 @@
 package com.example.noteforestserver.service;
 
-import com.example.noteforestserver.dto.CreateNewUserRequestDto;
-import com.example.noteforestserver.dto.UserLoginRequestDto;
-import com.example.noteforestserver.dto.UserLoginResponseDto;
-import com.example.noteforestserver.http.HttpStatus.EmailAlreadyExistsException;
-import com.example.noteforestserver.http.HttpStatus.EmailNotExistException;
-import com.example.noteforestserver.http.HttpStatus.InvalidPasswordException;
+import com.example.noteforestserver.dto.*;
+import com.example.noteforestserver.http.HttpStatus.*;
 import com.example.noteforestserver.model.User;
 import com.example.noteforestserver.repository.UserRepository;
 import com.example.noteforestserver.utils.JwtUtil;
@@ -54,7 +50,7 @@ public class UserServices {
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
-            if (passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
+            if (this.authPassword(userLoginRequestDto.getPassword(), user.getPassword())) {
                 String token = JwtUtil.generateToken(user.getId().toString(), user.getEmail());
                 return new UserLoginResponseDto(user, token);
             } else {
@@ -62,6 +58,28 @@ public class UserServices {
             }
         } else {
             throw new EmailNotExistException("This email does not exist: " + userLoginRequestDto.getEmail());
+        }
+    }
+
+    private boolean authPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    public UniversalApiResponseDto resetUserPasswordById(String uuid, UpdateUserPasswordRequestDto updateUserPasswordRequestDto) {
+        UUID userUuid = UUID.fromString(uuid);
+        Optional<User> existingUser = this.userRepository.findById(userUuid);
+        if (existingUser.isPresent()) {
+            if (this.authPassword(updateUserPasswordRequestDto.getOldPassword(), existingUser.get().getPassword())) {
+                User user = existingUser.get();
+                String newEncodedPassword = passwordEncoder.encode(updateUserPasswordRequestDto.getNewPassword());
+                user.setPassword(newEncodedPassword);
+                userRepository.save(user);
+                return new UniversalApiResponseDto(true, "updated successfully");
+            } else {
+                throw new PasswordNotMatch("password not match, please try again");
+            }
+        } else {
+            throw new UserNotFound("user not found for: " + userUuid);
         }
     }
 

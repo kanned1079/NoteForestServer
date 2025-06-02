@@ -1,8 +1,6 @@
 package com.example.noteforestserver.controller;
 
-import com.example.noteforestserver.dto.CreateNewUserRequestDto;
-import com.example.noteforestserver.dto.UserLoginRequestDto;
-import com.example.noteforestserver.dto.UserLoginResponseDto;
+import com.example.noteforestserver.dto.*;
 import com.example.noteforestserver.model.User;
 import com.example.noteforestserver.service.UserServices;
 import jakarta.validation.Valid;
@@ -33,6 +31,11 @@ public class UserController {
     @PostMapping("/login")
     public UserLoginResponseDto authenticate(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) {
         return this.userServices.authenticate(userLoginRequestDto);
+    }
+
+    @PutMapping("/password/update/{id}")
+    public UniversalApiResponseDto updateUserPassword(@PathVariable("id") String id, @Valid @RequestBody UpdateUserPasswordRequestDto updateUserPasswordRequestDto) {
+        return this.userServices.resetUserPasswordById(id, updateUserPasswordRequestDto);
     }
 
 
