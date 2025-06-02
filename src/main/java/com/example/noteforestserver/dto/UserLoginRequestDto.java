@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Email;
 
 @Getter
-public class UserLoginDto {
+public class UserLoginRequestDto {
     @Email(message = "email format not valid")
     @NotBlank(message = "email field blank is not allowed")
     private String email;
