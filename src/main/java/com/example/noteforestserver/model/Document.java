@@ -9,33 +9,42 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "n_user")
+@Table(name = "n_document", indexes = {
+        @Index(name = "idx_title", columnList = "title")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE n_user SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@Where(clause = "deleted_at IS NULL")
-public class User {
+@SQLDelete(sql = "UPDATE n_document SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@Where(clause = "deleted_at IS NULL") // 实现软删除
+
+public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-//    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
 
+    @Column(nullable = false)
+//    @org.hibernate.annotations.Index(name = "idx_title") // Hibernate 旧注解
+    private String title;
+
     @Column(nullable = true)
-    private String username;
+    private String subtitle;
+
+    @Column(nullable = true)
+    private String category;
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    private String content;
 
     @Column(nullable = false)
-    private String email;
-
     @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role = Role.USER;
+    private Boolean show = false;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(nullable = true)
+    private String imageUrl;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -55,4 +64,3 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 }
-

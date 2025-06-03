@@ -1,4 +1,4 @@
-package com.example.noteforestserver.dto;
+package com.example.noteforestserver.dto.user;
 
 import lombok.Getter;
 
