@@ -5,6 +5,7 @@ import com.example.noteforestserver.model.User;
 import com.example.noteforestserver.service.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class UserController {
     @PutMapping("/password/update/{id}")
     public UniversalApiResponseDto updateUserPassword(@PathVariable("id") String id, @Valid @RequestBody UpdateUserPasswordRequestDto updateUserPasswordRequestDto) {
         return this.userServices.resetUserPasswordById(id, updateUserPasswordRequestDto);
+    }
+
+    @PostMapping("/avatar")
+    public SaveUserAvatarResponseDto uploadAvatar(@RequestParam("file")MultipartFile file) {
+        return this.userServices.uploadUserAvatar(file);
     }
 
 
