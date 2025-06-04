@@ -9,9 +9,9 @@ public class NoteForestServerApplication {
 
 
     public static void main(String[] args) {
-        String currentDir = System.getProperty("user.dir");
+//        String currentDir = System.getProperty("user.dir");
 
-        System.out.println(currentDir);
+//        System.out.println(currentDir);
         SpringApplication.run(NoteForestServerApplication.class, args);
     }
 

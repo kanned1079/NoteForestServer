@@ -9,8 +9,7 @@ import java.util.Map;
 public class UniversalApiResponseDto {
     private boolean success;
     private String message;
-//    private T data;
-    private final Map<String, Object> data = new HashMap<String, Object>();
+    private final Map<String, Object> data = new HashMap<>();
 
     public UniversalApiResponseDto(boolean success, String message) {
         this.success = success;

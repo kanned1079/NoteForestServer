@@ -41,7 +41,7 @@ public class Document {
 
     @Column(nullable = false)
     @Builder.Default
-    private Boolean show = false;
+    private Boolean isShow = false;
 
     @Column(nullable = true)
     private String imageUrl;
